@@ -18,7 +18,8 @@ public class RecursiveLinearSearch implements ArraySearch
         }
         if(array[index] == item)
         {
-            return -1
+            return index;
         }
+        return recLinearSearch(array, item, index+1);
     }
 }
