@@ -14,16 +14,72 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Random;
 
+import static java.lang.System.nanoTime;
+
 /**
  * Driver class for the experimental simulator.
  * @author Isaac Griffith
  */
-public class Driver {
+public class Driver
+{
+    //all my time storage arrays, I run through each algorithm 10 times
+    private static long[] linearSearchTimes = new long[10];
+    private static long[] recursiveLinearSearchTimes = new long[10];
+    private static long[] linearBinarySearchTimes = new long[10];
+    private static long[] recursiveBinarySearchTimes = new long[10];
+    //only generating one random seed for use
+    private static Random rand = new Random();
 
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         // do the simulation using generateRandomArray()
-
         // report the results using report;
+
+        //instantiating every algorithm for use later
+        LinearSearch linearSearch = new LinearSearch();
+        RecursiveLinearSearch recursiveLinearSearch = new RecursiveLinearSearch();
+        BinarySearch linearBinarySearch = new BinarySearch();
+        RecursiveBinarySearch recursiveBinarySearch = new RecursiveBinarySearch();
+
+        for(int i = 0; i < 10; i++)
+        {
+            int size = 2000 + (500*i);
+
+            runSimulation(linearSearchTimes, linearSearch, size, i);
+
+            runSimulation(recursiveLinearSearchTimes, recursiveLinearSearch, size, i);
+
+            runSimulation(linearBinarySearchTimes, linearBinarySearch, size, i);
+
+            runSimulation(recursiveBinarySearchTimes, recursiveBinarySearch, size, i);
+        }
+        //your report function, I chose big increments for fun
+        report(linearSearchTimes, recursiveLinearSearchTimes, linearBinarySearchTimes, recursiveBinarySearchTimes,2000,500);
+    }
+    //this is the actual timer function, main just loops through this function 10 times for each algorithm
+    private static void runSimulation(long[] timesArr, ArraySearch searchAlgorithm, int size, int timerIndex)
+    {
+        long timeTaken = 0;
+
+        for(int i = 0; i < 2000; i++)
+        {
+            Integer[] arrayToSearch = generateRandomArray(size);
+            int item = rand.nextInt(2000);
+
+            /**
+             * start timer then run the algorithm
+             * stops timer after and subtracts the start clock time from start
+             */
+            long timeStart = nanoTime();
+            searchAlgorithm.search(arrayToSearch, item);
+            long timeEnd = nanoTime();
+
+            timeTaken += (timeEnd - timeStart);
+
+        }
+        //stores the time into my end array
+        timesArr[timerIndex] = timeTaken/2000;
+
     }
 
     /**
